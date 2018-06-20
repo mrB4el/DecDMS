@@ -12,8 +12,8 @@ namespace DecDMS.Network.BaseNetwork
     public class ProxyClient
     {
         #region Свойства
-        private static int SERVERUDPPORT = 10024;
-        private static int SERVERTCPPORT = 10025;
+        private static int SERVERUDPPORT = 1338;
+        private static int SERVERTCPPORT = 1337;
         private static string FILESLISTCOMMAND = "list";
         private static string PUSHCOMMAND = "push";
 

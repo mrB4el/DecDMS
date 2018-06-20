@@ -22,10 +22,7 @@ namespace DecDMS.Network.BaseNetwork
 
         private const int operation_size = 16;
         private List<string> myIpAddresses = new List<string>(0);
-
-
-                                    // максимум подключений
-        private Dictionary<IPAddress, int> udpClients;          // клиенты текстовых сообщений
+        public Dictionary<IPAddress, int> udpClients;          // клиенты текстовых сообщений
         private CancellationTokenSource cancelTokenSource;
         private TcpListener tcpListener;
 
@@ -76,7 +73,10 @@ namespace DecDMS.Network.BaseNetwork
         public void Cancel()
         {
             if (this.cancelTokenSource != null)
+            {
+                Console.WriteLine("Proxy shutdown requested");
                 this.cancelTokenSource.Cancel();
+            }
         }
         #endregion
 
@@ -196,12 +196,17 @@ namespace DecDMS.Network.BaseNetwork
                     string message = Encoding.UTF8.GetString(messageBytes);
 
                     if (message == PUSHCOMMAND) // поддержка связи
+                    {
+                        Console.WriteLine("GOT PUSH");
                         continue;
+                    }
                     /*if (message == NetService.FILESLISTCOMMAND) // запрос списка файлов
                         Task.Factory.StartNew(() => NetService.Instance.SendMessage(clientIp, clientPort, FileService.Instance.GetFilesList()));*/
                 }
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException) {
+                Console.WriteLine("UDP Listner shutted down");
+            }
             catch (SocketException ex)
             {
                 Console.WriteLine(string.Format("{0:hh:mm:ss} NetService.ListenUDP => Exception: {1}", DateTime.Now, ex.Message));
