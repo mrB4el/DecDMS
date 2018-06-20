@@ -31,6 +31,9 @@ namespace DecDMS
     {
         private static Test test = new Test();
 
+        private static ProxyServer Proxy;
+        private static ProxyClient Client;
+
         public static async Task Main(string[] args)
         {
             // Create the token source.
@@ -71,6 +74,11 @@ namespace DecDMS
                         stop = true;
                         break;
 
+                    case "list":
+                        foreach (KeyValuePair<IPAddress, int> client in Proxy.udpClients)
+                            Console.WriteLine("Client: {0}:{1}", client.Key, client.Value);
+                        break;
+                    
                     default:
                         break;
                 }
@@ -85,7 +93,7 @@ namespace DecDMS
             CancellationToken token = (CancellationToken)obj;
             Console.WriteLine("Proxy starting");
 
-            ProxyServer Proxy = new ProxyServer();
+            Proxy = new ProxyServer();
             while(true)
             {
                 if(token.IsCancellationRequested)
@@ -103,7 +111,7 @@ namespace DecDMS
             Console.WriteLine("Client starting");
 
 
-            ProxyClient Client = new ProxyClient(IPAddress.Parse("192.168.1.220"));
+            Client = new ProxyClient(IPAddress.Parse("127.0.0.1"));
             Client.RequestList();
 
 
@@ -112,7 +120,7 @@ namespace DecDMS
                 if (token.IsCancellationRequested)
                 {
                     Client.Cancel();
-                    Console.WriteLine("Proxy shutting down");
+                    Console.WriteLine("Client shutting down");
                     break;
                 }
             }
