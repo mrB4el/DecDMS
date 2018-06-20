@@ -57,11 +57,13 @@ namespace DecDMS.Network.BaseNetwork
                     IPAddress senderIp = ipep.Address; // ip отправителя
 
                     string message = Encoding.UTF8.GetString(messageBytes);
+                    Console.WriteLine("Got message: " + message);
 
                     if (!string.IsNullOrWhiteSpace(message))
                     {
                         if (this.OnMessageReceived != null)
-                            this.OnMessageReceived.Invoke(message);
+                            //this.OnMessageReceived.Invoke(message);
+                            Console.WriteLine("Got message: " + message);
                     }
                 }
             }
@@ -211,6 +213,14 @@ namespace DecDMS.Network.BaseNetwork
             this.serverIp = ip;
 
             this.udpClient = new UdpClient();
+        }
+
+        public void Send(string command)
+        {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(command);
+            IPEndPoint ipep = new IPEndPoint(this.serverIp, SERVERUDPPORT);
+
+            this.udpClient.Send(messageBytes, messageBytes.Length, ipep);
         }
 
         ///<summary>

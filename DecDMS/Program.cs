@@ -44,9 +44,9 @@ namespace DecDMS
 
             while (!stop)
             {
-                var line = Console.ReadLine();
-
-                switch (line)
+                var lines = Console.ReadLine();
+                String[] line = lines.Split(" ");
+                switch (line[0])
                 {
                     case "start":
                         ThreadPool.QueueUserWorkItem(new WaitCallback(StartServer), cts1.Token);
@@ -67,7 +67,6 @@ namespace DecDMS
                         Thread.Sleep(2500);
                         // Cancellation should have happened, so call Dispose.
                         cts2.Dispose();
-
                         break;
 
                     case "close":
@@ -78,7 +77,10 @@ namespace DecDMS
                         foreach (KeyValuePair<IPAddress, int> client in Proxy.udpClients)
                             Console.WriteLine("Client: {0}:{1}", client.Key, client.Value);
                         break;
-                    
+                    case "send":
+
+                        Client.Send("Message " + line[1] + " " + line[2]);
+                        break;
                     default:
                         break;
                 }
@@ -111,7 +113,8 @@ namespace DecDMS
             Console.WriteLine("Client starting");
 
 
-            Client = new ProxyClient(IPAddress.Parse("127.0.0.1"));
+            //Client = new ProxyClient(IPAddress.Parse("159.69.18.11"));
+            Client = new ProxyClient(IPAddress.Parse("192.168.1.66"));
             Client.RequestList();
 
 

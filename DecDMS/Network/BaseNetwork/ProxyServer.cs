@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -63,8 +64,9 @@ namespace DecDMS.Network.BaseNetwork
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             IPEndPoint ipep = new IPEndPoint(clientIp, clientPort);
 
-            client.Send(messageBytes, messageBytes.Length, ipep);
+            Console.WriteLine("[Proxy]: Message " + message + " sent to " + clientIp.ToString() + ":" + clientPort.ToString() );
 
+            client.Send(messageBytes, messageBytes.Length, ipep);
         }
 
         ///<summary>
@@ -199,6 +201,13 @@ namespace DecDMS.Network.BaseNetwork
                     {
                         Console.WriteLine("GOT PUSH");
                         continue;
+                    }
+
+                    if (message.Contains("Message"))
+                    {
+                        string[] sub = message.Split(" ");
+                        int recepient = Convert.ToInt32(sub[1]);
+                        this.SendMessage(udpClients.Keys.ElementAt(recepient), udpClients.Values.ElementAt(recepient), sub[2]);
                     }
                     /*if (message == NetService.FILESLISTCOMMAND) // запрос списка файлов
                         Task.Factory.StartNew(() => NetService.Instance.SendMessage(clientIp, clientPort, FileService.Instance.GetFilesList()));*/
